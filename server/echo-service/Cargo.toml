@@ -1,0 +1,34 @@
+[package]
+name = "echo-service"
+version = "0.1.0"
+authors = ["Bruce Brown <brown.bruce1207@gmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/BruceBrown/rust-server-project/server/echo-service"
+description = "example of async machines and services running an echo service"
+
+[workspace]
+members = [
+    "machine-impl",
+    "server-core",
+    "machine-foundation",
+    "config-foundation",
+    "components",
+    "tests/driver",
+    "examples/instruction-set",
+    "examples/config-service",
+    "examples/echo-service",
+]
+# Setting the default allows tests to run from VSCode Editor.
+default-members = [
+    "machine-impl",
+    "server-core",
+    "machine-foundation",
+    "config-foundation",
+    "components",
+    "tests/driver",
+    "examples/instruction-set",
+    "examples/config-service",
+    "examples/echo-service",
+]

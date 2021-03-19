@@ -1,0 +1,12 @@
+{
+   "features": [
+        "feature_1",
+        "feature_2",
+        "feature_4",
+        "feature_8"
+    ],
+    "job": {
+        "interval": 1000,
+        "enabled": false
+    }
+}

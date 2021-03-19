@@ -1,0 +1,25 @@
+{
+    "log": {
+        "level": "warn"
+    },
+    "server_flavor": "example",
+    "features": [
+         "EchoService"
+    ],
+    "services": {
+        "EchoService": {
+            "max_sessions": 10,
+            "server": {
+                "port": 8080,
+                "url": "http://localhost::8080"
+            }
+        },
+        "ChatService": {
+            "max_sessions": 10,
+            "server": {
+                "port": 8080,
+                "url": "http://localhost::8080"
+            }
+        }
+    }
+}

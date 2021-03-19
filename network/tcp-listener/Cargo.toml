@@ -1,0 +1,16 @@
+[package]
+name = "tcp-listener"
+version = "0.1.0"
+authors = ["Bruce Brown <brown.bruce1207@gmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/BruceBrown/rust-server-project/network/tcp-listener"
+description = "example of async machines and different executor models"
+
+
+[dependencies]
+smol = "1.2"
+futures = "0.3.13"
+log = "0.4"
+simplelog = "0.8"

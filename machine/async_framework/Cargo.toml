@@ -1,0 +1,27 @@
+[package]
+name = "async_framework"
+version = "0.1.0"
+
+authors = ["Bruce Brown <brown.bruce1207@gmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/BruceBrown/rust-server-project/machine/async_framework"
+description = "example of async machines and different executor models"
+
+[dependencies]
+machine_impl = { path="./machine_impl" }
+
+smol = "1.2"
+crossbeam = "0.8"
+once_cell = "1.6"
+uuid = { version = "0.8", default-features = false, features = ["v4"] }
+smart-default = "0.6"
+rand = "0.7"
+parking_lot = "0.11"
+log = "0.4"
+simplelog = "0.9"
+async-trait = "0.1"
+num_cpus = "1.13"
+
+

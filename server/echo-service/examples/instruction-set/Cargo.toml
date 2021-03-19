@@ -1,0 +1,16 @@
+[package]
+name = "instruction-set"
+version = "0.1.0"
+authors = ["Bruce Brown <brown.bruce1207@gmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/BruceBrown/rust-server-project/server/echo-service/examples/instruction-set"
+description = "Example instruction sets for async machines and services"
+
+[dependencies]
+machine_impl = { path = "../../machine-impl" }
+server-core = { path =  "../../server-core" }
+smol = "1.2"
+smart-default = "0.6"
+rand = "0.7"

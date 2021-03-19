@@ -1,0 +1,16 @@
+[package]
+name = "machine_impl"
+version = "0.1.0"
+authors = ["Bruce Brown <brown.bruce1207@gmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/BruceBrown/async_framework"
+description = "example of async machines and different executor models"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "1.0"
+quote = "1.0"

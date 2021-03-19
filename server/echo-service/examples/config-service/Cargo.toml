@@ -1,0 +1,19 @@
+[package]
+name = "config-service"
+version = "0.1.0"
+authors = ["Bruce Brown <brown.bruce1207@gmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/BruceBrown/rust-server-project/server/echo-service/examples/config-service"
+description = "Example of configuring a service for async machines and services"
+
+[dependencies]
+config-foundation = { path = "../../config-foundation" }
+
+config = { version = "0.10" }
+serde = {version = "1.0", features = ["derive"] }
+serde_with = { version="1.6" }
+
+smart-default = "0.6"
+log = "0.4"
