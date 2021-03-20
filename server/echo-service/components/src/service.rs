@@ -8,6 +8,8 @@ pub type ServiceResult<T> = result::Result<T, ServiceError>;
 pub enum ServiceError {
     /// Invalid state transition.
     InvalidStateTransition(ServiceState, ServiceState),
+    /// Custom message.
+    Message(String),
 }
 
 // Forward Debug to Display for readable panic! messages
@@ -18,13 +20,10 @@ impl fmt::Debug for ServiceError {
 impl fmt::Display for ServiceError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Self::InvalidStateTransition(old_state, new_state) => {
-                write!(
-                    f,
-                    "invalid state transition, old_state={:#?}, new_state={:#?}",
-                    old_state, new_state
-                )
+            Self::InvalidStateTransition(curr, new) => {
+                write!(f, "invalid state transition, curr={:#?}, new={:#?}", curr, new)
             },
+            Self::Message(ref s) => write!(f, "{}", s),
         }
     }
 }
@@ -33,6 +32,7 @@ impl Error for ServiceError {
     fn description(&self) -> &str {
         match *self {
             Self::InvalidStateTransition(_old_state, _new_state) => "invalid transition",
+            Self::Message(ref s) => s,
         }
     }
     fn cause(&self) -> Option<&dyn Error> { None }
