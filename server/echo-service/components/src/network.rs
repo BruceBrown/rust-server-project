@@ -72,7 +72,7 @@ impl NetCore {
 
     pub fn get_sender() -> NetSender {
         let network = netcore.borrow();
-        if let NetCoreField::ServiceState(state) = network.state {
+        if let NetCoreField::ServiceState(ref state) = network.state {
             if state.is_running() {
                 if let NetCoreField::NetSender(sender) = &network.sender {
                     return sender.clone();

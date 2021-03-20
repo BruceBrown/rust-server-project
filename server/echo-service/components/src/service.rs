@@ -53,9 +53,12 @@ impl ServiceState {
     pub fn start_with_notification(&mut self, on_transition: Option<&mut dyn ServiceStateTransition>) {
         if self.can_start() {
             if let Some(notifier) = on_transition {
-                notifier.will_start(self);
+                notifier.will_start(&self);
             }
-            *self = Self::Started
+            log::info!("set state started");
+            *self = Self::Started;
+        } else {
+            log::warn!("unable to start, state={:#?}", self);
         }
     }
 
@@ -68,7 +71,7 @@ impl ServiceState {
             if let Some(notifier) = on_transition {
                 notifier.will_run(self);
             }
-            *self = Self::Running
+            *self = Self::Running;
         }
     }
     /// Attempt to transition to the Draining state.
@@ -78,9 +81,9 @@ impl ServiceState {
     pub fn drain_with_notification(&mut self, on_transition: Option<&mut dyn ServiceStateTransition>) {
         if self.can_drain() {
             if let Some(notifier) = on_transition {
-                notifier.will_drain(self);
+                notifier.will_drain(&self);
             }
-            *self = Self::Draining
+            *self = Self::Draining;
         }
     }
     /// Attempt to transition to the Stopped state.
@@ -90,26 +93,26 @@ impl ServiceState {
     pub fn stop_with_notification(&mut self, on_transition: Option<&mut dyn ServiceStateTransition>) {
         if self.can_stop() {
             if let Some(notifier) = on_transition {
-                notifier.will_stop(self);
+                notifier.will_stop(&self);
             }
-            *self = Self::Stopped
+            *self = Self::Stopped;
         }
     }
 
     /// Return true if state can transition to Started.
-    pub fn can_start(self) -> bool { self == Self::Init }
+    pub fn can_start(&self) -> bool { *self == Self::Init }
 
     /// Return true if state can transition to Running.
-    pub fn can_run(self) -> bool { self == Self::Started }
+    pub fn can_run(&self) -> bool { *self == Self::Started }
 
     /// Return true if state can transition to Draining.
-    pub fn can_drain(self) -> bool { self == Self::Running }
+    pub fn can_drain(&self) -> bool { *self == Self::Running }
 
     /// Return true if state can transition to Stopped.
-    pub fn can_stop(self) -> bool { self != Self::Stopped }
+    pub fn can_stop(&self) -> bool { *self != Self::Stopped }
 
     /// return trye if state is running
-    pub fn is_running(self) -> bool { self == Self::Running }
+    pub fn is_running(&self) -> bool { *self == Self::Running }
 }
 
 #[cfg(test)]
