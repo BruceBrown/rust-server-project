@@ -2,8 +2,6 @@ use super::*;
 use smart_default::*;
 
 use futures::{future::FutureExt, pin_mut, select};
-use log;
-use smol;
 
 /// BackgroundTask is a task wrapper allowing a task to run detached, while also allowing it to be cancelled.
 ///
@@ -51,9 +49,7 @@ impl BackgroundTask {
     pub fn detach<T: 'static + Send>(task: smol::Task<T>, label: &str) -> Self {
         let (sender, receiver) = smol::channel::unbounded::<()>();
         let executor = get_executor();
-        let t1 = executor
-            .spawn(async move { receiver.recv().await.unwrap_or_else(|_err| ()) })
-            .fuse();
+        let t1 = executor.spawn(async move { receiver.recv().await.unwrap_or(()) }).fuse();
         let t2 = task.fuse();
         let label = label.to_string();
         executor

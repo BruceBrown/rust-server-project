@@ -1,5 +1,5 @@
 [package]
-name = "echo-service"
+name = "service-and-config"
 version = "0.1.0"
 authors = ["Bruce Brown <brown.bruce1207@gmail.com>"]
 edition = "2018"

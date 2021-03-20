@@ -18,9 +18,9 @@ use super::*;
 // Bob->Net: Close(conn_id)
 // ```
 
-/// This is where d3 meets Tcp or UDP. The Network leans heavily upon Mio
-/// to provide the foundation for interacting with the network. The d3 network provides
-/// an additional abstraction to adapt it for d3 machines and encapsulate Mio.
+/// This is where machines meet Tcp or UDP. The Network leans heavily upon smol
+/// to provide the foundation for interacting with the network. The network provides
+/// an additional abstraction to adapt it for machines and encapsulate Mio.
 ///
 /// This sequence diagram illustrates a machine, Alice asking for a TCP listener to
 /// be installed. When there is a connection, the network is told to send control
@@ -57,12 +57,6 @@ use super::*;
 ///    |                                                    |                              |
 ///    |                                                    |    SendBytes(conn_id, bytes) |
 ///    |                                                    |<-----------------------------|
-///    |                                                    |    ------------------------\ |
-///    |                                                    |    | Bob may be told how   |-|
-///    |                                                    |    | much more he can send | |
-///    |                                                    |    |-----------------------| |
-///    |                                                    | SendReady(write_buf_size)    |
-///    |                                                    |----------------------------->|
 ///    |                                                    |----------------------------\ |
 ///    |                                                    || Bob Closes the connection |-|
 ///    |                                                    ||---------------------------| |

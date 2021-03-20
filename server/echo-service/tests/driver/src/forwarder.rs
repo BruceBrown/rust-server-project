@@ -143,10 +143,7 @@ impl ForwarderMutable {
 
 impl Forwarder {
     /// Create a new Forwarder.
-    pub fn new(id: usize) -> Self {
-        let res = Self { id, ..Default::default() };
-        res
-    }
+    pub fn new(id: usize) -> Self { Self { id, ..Default::default() } }
 
     /// Get the id of this Forwarder.
     pub const fn get_id(&self) -> usize { self.id }

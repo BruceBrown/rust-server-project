@@ -19,7 +19,6 @@ fn main_() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    std::thread::sleep(std::time::Duration::from_secs(1));
     // Get the services running.
     for s in services.iter_mut() {
         if let Err(err) = s.run() {
@@ -27,8 +26,9 @@ fn main_() -> Result<(), Box<dyn Error>> {
             s.stop().ok();
         }
     }
+
     // Sit here for a while while clients come and go.
-    std::thread::sleep(std::time::Duration::from_secs(60 * 5));
+    std::thread::sleep(std::time::Duration::from_secs(10));
     // Drain the services.
     for s in services.iter_mut() {
         if let Err(err) = s.drain() {
@@ -63,7 +63,7 @@ fn load_services() -> Result<Vec<Box<dyn ServerService>>, ConfigError> {
             "EchoService" => {
                 let cfg = settings.service_config.get(f).ok_or_else(|| ConfigError::NotFound(f.clone()))?;
                 let svc = EchoService::create(cfg, &settings)
-                    .ok_or_else(|| ConfigError::Message(format!("Incorrect settings for EchoService")))?;
+                    .ok_or_else(|| ConfigError::Message("Incorrect settings for EchoService".to_string()))?;
                 services.push(svc);
             },
             &_ => (),
