@@ -14,7 +14,7 @@ mod service;
 
 pub use net_instructionset::{NetCmd, NetConnId, NetReceiver, NetSender};
 pub use network::NetCore;
-pub use service::*;
+pub use service::{ServerService, ServiceError, ServiceResult, ServiceState, ServiceStateTransition};
 
 #[cfg(test)]
 mod tests {}

@@ -16,5 +16,5 @@ The Echo service implements a service which handles a connection. Anything recei
 sent back to the sender.
 
 ## Test Driven Experiments
-We've reached the point where test driven experiments have a diminised return, as we're
+We've reached the point where test driven experiments have a diminised value, as we're
 running services which have a longer duration for testing.
