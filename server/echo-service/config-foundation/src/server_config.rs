@@ -129,7 +129,7 @@ impl ConfigBuilder {
     fn create(&self, merger: &mut dyn ConfigMerger) -> Result<Config, ConfigError> {
         // Determine where we are located, default it if unknown
         let config_env_default = self.config.config_env_default.clone();
-        let env = std::env::var(self.config.config_env_var.clone()).unwrap_or_else(|_| config_env_default.into());
+        let env = std::env::var(self.config.config_env_var.clone()).unwrap_or(config_env_default);
 
         // Start with the default struct
         let mut s = Config::default();
@@ -146,8 +146,8 @@ impl ConfigBuilder {
         // Try to deterime the server's flavor and load its config
         let var = self.config.config_env_var_server_flavor.clone();
         let default = self.config.config_env_var_server_flavor_default.clone();
-        let default = s.get(&var.to_lowercase()).unwrap_or_else(|_| default);
-        let server_flavor = std::env::var(var).unwrap_or_else(|_| default);
+        let default = s.get(&var.to_lowercase()).unwrap_or(default);
+        let server_flavor = std::env::var(var).unwrap_or(default);
 
         if !server_flavor.is_empty() {
             // merge in the default toml and json config files

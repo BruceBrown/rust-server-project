@@ -11,12 +11,12 @@ use std::fmt;
 /// These are some commonly used environment settings. You are free to
 /// use them, or not.
 
-/// The ENV enum is required, however the fields can be changed.
+/// The Environment enum is required, however the fields can be changed.
 /// An environment variable is queried to determine the evironment
 /// which the server is running on, that is used to pull in config
 /// files matching the environment.
 #[derive(Clone, Debug, SmartDefault, Deserialize)]
-pub enum ENV {
+pub enum Environment {
     Development,
     Testing,
     Stage,
@@ -24,27 +24,27 @@ pub enum ENV {
     Production,
 }
 
-impl fmt::Display for ENV {
+impl fmt::Display for Environment {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ENV::Development => write!(f, "Development"),
-            ENV::Testing => write!(f, "Testing"),
-            ENV::Stage => write!(f, "Stage"),
-            ENV::Production => write!(f, "Production"),
+            Environment::Development => write!(f, "Development"),
+            Environment::Testing => write!(f, "Testing"),
+            Environment::Stage => write!(f, "Stage"),
+            Environment::Production => write!(f, "Production"),
             #[allow(unreachable_patterns)]
             _ => panic!("Need to update Display for ENV"),
         }
     }
 }
 
-impl From<&str> for ENV {
+impl From<&str> for Environment {
     fn from(env: &str) -> Self {
         match env {
-            "Development" => ENV::Development,
-            "Testing" => ENV::Testing,
-            "Stage" => ENV::Stage,
-            "Production" => ENV::Production,
-            _ => panic!("Need to update From for ENV"),
+            "Development" => Environment::Development,
+            "Testing" => Environment::Testing,
+            "Stage" => Environment::Stage,
+            "Production" => Environment::Production,
+            _ => panic!("Need to update From for Environment"),
         }
     }
 }
@@ -64,7 +64,7 @@ pub struct Log {
 /// enough for many things.
 #[derive(Debug, Default, Deserialize, Clone)]
 pub struct ServerSettings {
-    pub env: ENV,
+    pub env: Environment,
     pub log: Log,
     pub server_flavor: String,
     pub features: HashSet<String>,

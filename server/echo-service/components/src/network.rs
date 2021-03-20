@@ -42,7 +42,7 @@ impl NetCore {
     pub fn start() {
         if let NetCoreField::ServiceState(ref mut state) = netcore.borrow_mut().state {
             if state.can_start() {
-                state.start();
+                state.start().ok();
                 log::info!("started network");
             } else {
                 return;
@@ -65,7 +65,7 @@ impl NetCore {
             .detach();
         netcore.borrow_mut().sender = NetCoreField::NetSender(sender);
         if let NetCoreField::ServiceState(ref mut state) = netcore.borrow_mut().state {
-            state.run();
+            state.run().ok();
             log::info!("running network");
         }
     }
@@ -86,7 +86,7 @@ impl NetCore {
         if let NetCoreField::ServiceState(ref mut state) = netcore.borrow_mut().state {
             if state.can_stop() {
                 log::info!("stopping network");
-                state.stop();
+                state.stop().ok();
             }
         }
         if let NetCoreField::NetSender(sender) = &netcore.borrow().sender {
@@ -235,16 +235,19 @@ impl NetController {
 
     async fn send_bytes(&mut self, conn_id: NetConnId, mut bytes: Vec<u8>) -> net::Result<()> {
         let mut connections = self.connections.lock().await;
-        log::debug!("preparing to send conn_id={}, bytes={}", conn_id, bytes.len());
         if let Some(conn) = connections.get_mut(conn_id) {
             let mut remaining = bytes.len();
             while remaining > 0 {
-                if let Some(written) = conn.stream.write(&bytes).await.ok() {
-                    log::debug!("sent conn_id={}, bytes={}", conn_id, written);
+                if let Ok(written) = conn.stream.write(&bytes).await {
+                    if written == 0 {
+                        break;
+                    }
                     remaining -= written;
                     if remaining > 0 {
                         bytes.drain(0 .. written);
                     }
+                } else {
+                    break;
                 }
             }
         }

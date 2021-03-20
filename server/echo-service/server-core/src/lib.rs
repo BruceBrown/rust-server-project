@@ -1,6 +1,5 @@
 use async_trait::async_trait;
 use crossbeam::atomic::AtomicCell;
-use num_cpus;
 use once_cell::sync::Lazy;
 use smol::{self};
 use std::{
@@ -86,6 +85,7 @@ static default_num_threads: AtomicCell<usize> = AtomicCell::new(0);
 
 /// The executors, as a tupple of: executors, join handles, and a sender.
 /// When the sender is closed the executors will terminate.
+#[allow(clippy::type_complexity)]
 static EXECUTOR: Lazy<(
     Vec<Arc<::smol::Executor<'_>>>,
     Vec<thread::JoinHandle<()>>,

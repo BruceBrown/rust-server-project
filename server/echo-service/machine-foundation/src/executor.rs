@@ -1,5 +1,3 @@
-use num_cpus;
-
 #[allow(dead_code)]
 fn log_and_get_cpus() -> usize {
     let logical_cpus = num_cpus::get();

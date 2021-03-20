@@ -6,7 +6,6 @@ use machine_foundation::{get_executor, BackgroundTask};
 use std::sync::Arc;
 
 use atomic_refcell::AtomicRefCell;
-use log;
 use smol::{channel, lock::Mutex};
 
 mod net_instructionset;

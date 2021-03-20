@@ -4,6 +4,7 @@ use smart_default::*;
 use machine_foundation::{get_executor, machine, set_default_channel_max, Machine, MachineSender};
 #[allow(unused_imports)]
 use std::{
+    io,
     sync::{atomic::AtomicUsize, Arc},
     time::{self, Duration, Instant},
 };
@@ -32,7 +33,7 @@ pub trait TestDriver {
 }
 
 /// The wait_for_notification function provides a common way to wait for a TestDriver::run() to complete.
-pub fn wait_for_notification(receiver: &TestMessageReceiver, _messages: usize, _duration: Duration) -> Result<(), ()> {
+pub fn wait_for_notification(receiver: &TestMessageReceiver, _messages: usize, _duration: Duration) -> Result<(), io::Error> {
     let start = std::time::SystemTime::now();
     let executor = get_executor();
     let r = receiver.clone();
@@ -40,11 +41,12 @@ pub fn wait_for_notification(receiver: &TestMessageReceiver, _messages: usize, _
         if let Ok(_cmd) = r.recv().await {
             let elapsed = start.elapsed().unwrap();
             log::info!("completed in {:#?}", elapsed);
+            Ok(())
         } else {
             log::error!("receiver got error");
+            Err(io::Error::new(io::ErrorKind::TimedOut, "timed out"))
         }
-    }));
-    Ok(())
+    }))
 }
 
 #[cfg(test)]

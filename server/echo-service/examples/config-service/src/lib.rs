@@ -35,11 +35,11 @@ impl TryFrom<(String, config::Value)> for ServiceConfig {
     fn try_from((key, value): (String, config::Value)) -> Result<Self, ConfigError> {
         match key {
             _ if key == "EchoService" => {
-                let cfg: Service = value.clone().try_into()?;
+                let cfg: Service = value.try_into()?;
                 Ok(ServiceConfig::EchoService(cfg))
             },
             _ if key == "ChatService" => {
-                let cfg: Service = value.clone().try_into()?;
+                let cfg: Service = value.try_into()?;
                 Ok(ServiceConfig::ChatService(cfg))
             },
             _ => panic!("{}", format!("Need to update TryFrom for ComponentConfig for key={}", key)),

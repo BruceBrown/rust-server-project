@@ -63,7 +63,7 @@ fn load_services() -> Result<Vec<Box<dyn ServerService>>, ConfigError> {
             "EchoService" => {
                 let cfg = settings.service_config.get(f).ok_or_else(|| ConfigError::NotFound(f.clone()))?;
                 let svc = EchoService::create(cfg, &settings)
-                    .ok_or_else(|| ConfigError::Message(format!("Incorrect settings for EchoService")))?;
+                    .ok_or_else(|| ConfigError::Message("Incorrect settings for EchoService".to_string()))?;
                 services.push(svc);
             },
             &_ => (),

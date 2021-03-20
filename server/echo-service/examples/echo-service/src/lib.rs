@@ -1,5 +1,5 @@
 // This could be made a lot simpler, however, we're going to illustrate running an instruction set.
-use components::{NetCmd, NetConnId, NetCore, NetSender, ServerService, ServiceState};
+use components::{NetCmd, NetConnId, NetCore, NetSender, ServerService, ServiceResult, ServiceState};
 use machine_foundation::{get_executor, machine, Machine, MachineSender};
 
 // piggy-back on the config-service example
@@ -18,7 +18,7 @@ pub struct EchoService {
 impl ServerService for EchoService {
     fn get_name(&self) -> &str { "echo-service" }
     fn get_drain_count(&self) -> usize { smol::block_on(async { self.controller.lock().await.get_connection_count() }) }
-    fn start(&mut self) -> Result<(), std::io::Error> {
+    fn start(&mut self) -> ServiceResult<()> {
         log::debug!("echo service preparing to start");
         let address = format!("127.0.0.1:{}", self.config.server.port);
         let state = self.state.clone();
@@ -29,73 +29,34 @@ impl ServerService for EchoService {
                 let net_sender = NetCore::get_sender();
                 let (sender, receiver) = smol::channel::unbounded::<NetCmd>();
                 net_sender.send(NetCmd::BindTcpListener(address, sender)).await.ok();
-                loop {
-                    match receiver.recv().await {
-                        Ok(cmd) => {
-                            let state = state.lock().await;
-                            match *state {
-                                ServiceState::Init => {
-                                    log::debug!("echo state=ServiceState::Init");
-                                },
-                                ServiceState::Started => {
-                                    log::debug!("echo state=ServiceState::Started");
-                                },
-                                ServiceState::Running => {
-                                    log::debug!("echo state=ServiceState::Running");
-                                    controller.lock().await.handle_cmd(cmd, &*state).await;
-                                },
-                                ServiceState::Draining => {
-                                    log::debug!("echo state=ServiceState::Draining");
-                                    controller.lock().await.handle_cmd(cmd, &*state).await;
-                                },
-                                ServiceState::Stopped => {
-                                    log::debug!("echo state=ServiceState::Stopped");
-                                    break;
-                                },
-                            }
-                        },
-                        Err(_err) => break,
+                while let Ok(cmd) = receiver.recv().await {
+                    let state = state.lock().await;
+                    if *state == ServiceState::Stopped {
+                        break;
                     }
+                    controller.lock().await.handle_cmd(cmd, &*state).await;
                 }
-                // we get here when stopped or on error
             })
             .detach();
-        smol::block_on(async move {
+        smol::block_on(async {
             let mut state = self.state.lock().await;
-            state.start();
-            log::debug!("echo service state={:#?}", state);
-        });
-        Ok(())
+            state.start()
+        })
     }
 
-    fn run(&mut self) -> Result<(), std::io::Error> {
+    fn run(&mut self) -> ServiceResult<()> {
         log::debug!("echo service preparing to run");
-        smol::block_on(async move {
-            let mut state = self.state.lock().await;
-            state.run();
-            log::debug!("echo service state={:#?}", state);
-        });
-        Ok(())
+        smol::block_on(async { self.state.lock().await.run() })
     }
 
-    fn drain(&mut self) -> Result<(), std::io::Error> {
+    fn drain(&mut self) -> ServiceResult<()> {
         log::debug!("echo service preparing to drain, connection_count={}", self.get_drain_count());
-        smol::block_on(async move {
-            let mut state = self.state.lock().await;
-            state.drain();
-            log::debug!("echo service state={:#?}", state);
-        });
-        Ok(())
+        smol::block_on(async { self.state.lock().await.drain() })
     }
 
-    fn stop(&mut self) -> Result<(), std::io::Error> {
+    fn stop(&mut self) -> ServiceResult<()> {
         log::debug!("echo service preparing to stop");
-        smol::block_on(async move {
-            let mut state = self.state.lock().await;
-            state.stop();
-            log::debug!("echo service state={:#?}", state);
-        });
-        Ok(())
+        smol::block_on(async { self.state.lock().await.stop() })
     }
 }
 
